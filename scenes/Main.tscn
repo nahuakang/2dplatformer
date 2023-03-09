@@ -1,7 +1,8 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://assets/tiles/tiles_packed.png" type="Texture" id=1]
 [ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/GameCamera.tscn" type="PackedScene" id=3]
 
 [sub_resource type="ConvexPolygonShape2D" id=4]
 points = PoolVector2Array( 18, 18, 0, 18, 0, 0, 18, 0 )
@@ -192,5 +193,4 @@ tile_data = PoolIntArray( -196609, 0, 0, -262144, 0, 2, -131081, 0, 0, -131077, 
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-current = true
+[node name="GameCamera" parent="." instance=ExtResource( 3 )]

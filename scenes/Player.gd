@@ -2,36 +2,51 @@ extends KinematicBody2D
 
 var gravity = 1000
 var velocity = Vector2.ZERO
-var maxHorizontalSpeed = 150
-var horizontalAcceleration = 2500
-var jumpSpeed = 360
-var jumpTerminationMultiplier = 4
+var max_horizontal_speed = 150
+var horizontal_acceleration = 2500
+var jump_speed = 360
+var jump_termination_multiplier = 4
 
 func _ready() -> void:
 	pass # Replace with function body.
 
 func _process(delta: float) -> void:
-	var moveVector = get_movement_vector()
+	var move_vector = get_movement_vector()
 	
-	velocity.x += moveVector.x * maxHorizontalSpeed * delta
-	if (moveVector.x == 0 ):
+	velocity.x += move_vector.x * horizontal_acceleration * delta
+	if (move_vector.x == 0 ):
 		velocity.x = lerp(0, velocity.x, pow(2, -50 * delta))
 	
-	velocity.x = clamp(velocity.x, -maxHorizontalSpeed, maxHorizontalSpeed)
+	velocity.x = clamp(velocity.x, -max_horizontal_speed, max_horizontal_speed)
 	
-	if (moveVector.y < 0 && is_on_floor()):
-		velocity.y = moveVector.y * jumpSpeed
+	if (move_vector.y < 0 && is_on_floor()):
+		velocity.y = move_vector.y * jump_speed
 	
 	if (velocity.y < 0 && !Input.is_action_pressed("jump")):
-		velocity.y += gravity * jumpTerminationMultiplier * delta
+		velocity.y += gravity * jump_termination_multiplier * delta
 	else:
 		velocity.y += gravity * delta
 	
 	velocity = move_and_slide(velocity, Vector2.UP)
+	
+	update_animation()
 
 func get_movement_vector() -> Vector2:
-	var moveVector = Vector2.ZERO
-	moveVector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	moveVector.y = -1 if Input.is_action_just_pressed("jump") else 0
+	var move_vector = Vector2.ZERO
+	move_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	move_vector.y = -1 if Input.is_action_just_pressed("jump") else 0
 	
-	return moveVector
+	return move_vector
+
+func update_animation():
+	var move_vector = get_movement_vector()
+	
+	if (!is_on_floor()):
+		$AnimatedSprite.play("jump")
+	elif (move_vector.x != 0):
+		$AnimatedSprite.play("run")
+	else:
+		$AnimatedSprite.play("idle")
+	
+	if (move_vector.x != 0):
+		$AnimatedSprite.flip_h = true if move_vector.x > 0 else false
