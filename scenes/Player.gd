@@ -6,6 +6,7 @@ var max_horizontal_speed = 150
 var horizontal_acceleration = 2500
 var jump_speed = 360
 var jump_termination_multiplier = 4
+var has_double_jump = false
 
 func _ready() -> void:
 	pass # Replace with function body.
@@ -19,8 +20,13 @@ func _process(delta: float) -> void:
 	
 	velocity.x = clamp(velocity.x, -max_horizontal_speed, max_horizontal_speed)
 	
-	if (move_vector.y < 0 && (is_on_floor() || !$CoyoteTimer.is_stopped())):
+	if (move_vector.y < 0 && (is_on_floor() || !$CoyoteTimer.is_stopped() || has_double_jump)):
 		velocity.y = move_vector.y * jump_speed
+		
+		if (!is_on_floor() && $CoyoteTimer.is_stopped()):
+			has_double_jump = false
+		
+		$CoyoteTimer.stop()
 	
 	if (velocity.y < 0 && !Input.is_action_pressed("jump")):
 		velocity.y += gravity * jump_termination_multiplier * delta
@@ -33,6 +39,9 @@ func _process(delta: float) -> void:
 	
 	if (was_on_floor and !is_on_floor()):
 		$CoyoteTimer.start()
+	
+	if (is_on_floor()):
+		has_double_jump = true
 	
 	update_animation()
 
