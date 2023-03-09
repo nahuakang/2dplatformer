@@ -19,15 +19,20 @@ func _process(delta: float) -> void:
 	
 	velocity.x = clamp(velocity.x, -max_horizontal_speed, max_horizontal_speed)
 	
-	if (move_vector.y < 0 && is_on_floor()):
+	if (move_vector.y < 0 && (is_on_floor() || !$CoyoteTimer.is_stopped())):
 		velocity.y = move_vector.y * jump_speed
 	
 	if (velocity.y < 0 && !Input.is_action_pressed("jump")):
 		velocity.y += gravity * jump_termination_multiplier * delta
 	else:
 		velocity.y += gravity * delta
+		
+	var was_on_floor = is_on_floor()
 	
 	velocity = move_and_slide(velocity, Vector2.UP)
+	
+	if (was_on_floor and !is_on_floor()):
+		$CoyoteTimer.start()
 	
 	update_animation()
 
