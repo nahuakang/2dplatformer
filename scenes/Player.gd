@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal died
+
 var gravity = 1000
 var velocity = Vector2.ZERO
 var max_horizontal_speed = 150
@@ -9,7 +11,7 @@ var jump_termination_multiplier = 4
 var has_double_jump = false
 
 func _ready() -> void:
-	pass # Replace with function body.
+	$HazardArea.connect("area_entered", self, "on_hazard_area_entered")
 
 func _process(delta: float) -> void:
 	var move_vector = get_movement_vector()
@@ -64,3 +66,6 @@ func update_animation():
 	
 	if (move_vector.x != 0):
 		$AnimatedSprite.flip_h = true if move_vector.x > 0 else false
+
+func on_hazard_area_entered(area2d: Area2D) -> void:
+	emit_signal("died")
