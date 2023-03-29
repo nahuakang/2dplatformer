@@ -8,7 +8,7 @@ func _ready():
 	VisualServer.set_default_clear_color(background_color)
 
 func _process(delta: float) -> void:
-	var target_position = acquire_target_position()
+	target_position = acquire_target_position()
 	
 	global_position = lerp(target_position, global_position, pow(2, -15 * delta))
 	
