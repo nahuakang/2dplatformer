@@ -2,18 +2,41 @@ extends KinematicBody2D
 
 signal died
 
+enum State { NORMAL, DASH }
+
 var gravity = 1000
 var velocity = Vector2.ZERO
+
 var max_horizontal_speed = 150
 var horizontal_acceleration = 2500
+
+var max_dash_speed = 500
+var min_dash_speed = 200
+var is_state_new = true
+
 var jump_speed = 360
 var jump_termination_multiplier = 4
 var has_double_jump = false
+
+var current_state = State.NORMAL
 
 func _ready() -> void:
 	$HazardArea.connect("area_entered", self, "on_hazard_area_entered")
 
 func _process(delta: float) -> void:
+	match current_state:
+		State.NORMAL:
+			process_normal(delta)
+		State.DASH:
+			process_dash(delta)
+	
+	is_state_new = false
+
+func change_state(new_state) -> void:
+	current_state = new_state
+	is_state_new = true
+
+func process_normal(delta: float) -> void:
 	var move_vector = get_movement_vector()
 	
 	velocity.x += move_vector.x * horizontal_acceleration * delta
@@ -45,7 +68,28 @@ func _process(delta: float) -> void:
 	if (is_on_floor()):
 		has_double_jump = true
 	
+	if (Input.is_action_just_pressed("dash")):
+		call_deferred("change_state", State.DASH)
+	
 	update_animation()
+
+func process_dash(delta: float) -> void:
+	if (is_state_new):
+		$AnimatedSprite.play("jump")
+		var move_vector = get_movement_vector()
+		var velocity_mod = 1
+		
+		if (move_vector.x != 0):
+			velocity_mod = sign(move_vector.x)
+		else:
+			velocity_mod = 1 if $AnimatedSprite.flip_h else -1
+		velocity = Vector2(max_dash_speed * velocity_mod, 0)
+
+	velocity = move_and_slide(velocity, Vector2.UP)
+	velocity.x = lerp(0, velocity.x, pow(2, -8 * delta))
+	
+	if (abs(velocity.x) < min_dash_speed):
+		call_deferred("change_state", State.NORMAL)
 
 func get_movement_vector() -> Vector2:
 	var move_vector = Vector2.ZERO
