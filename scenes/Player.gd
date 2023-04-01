@@ -15,12 +15,13 @@ var horizontal_acceleration = 2500
 
 var max_dash_speed = 500
 var min_dash_speed = 200
-var is_state_new = true
+var has_dash = false
 
-var jump_speed = 360
+var jump_speed = 330
 var jump_termination_multiplier = 4
 var has_double_jump = false
 
+var is_state_new = true
 var current_state = State.NORMAL
 
 func _ready() -> void:
@@ -76,9 +77,11 @@ func process_normal(delta: float) -> void:
 	
 	if (is_on_floor()):
 		has_double_jump = true
+		has_dash = true
 	
-	if (Input.is_action_just_pressed("dash")):
+	if (has_dash && Input.is_action_just_pressed("dash")):
 		call_deferred("change_state", State.DASH)
+		has_dash = false
 	
 	update_animation()
 
