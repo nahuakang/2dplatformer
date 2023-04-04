@@ -26,7 +26,6 @@ radius = 7.0
 [node name="Enemy" type="KinematicBody2D"]
 collision_layer = 0
 script = ExtResource( 3 )
-start_direction = 1
 
 [node name="GoalDetector" type="Area2D" parent="."]
 collision_layer = 131072
@@ -39,6 +38,7 @@ shape = SubResource( 3 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 animation = "run"
+frame = 1
 playing = true
 offset = Vector2( 0, -12 )
 
