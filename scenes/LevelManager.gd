@@ -4,9 +4,6 @@ export(Array, PackedScene) var level_scenes
 
 var current_level_index = 0
 
-func _ready() -> void:
-	change_level(current_level_index)
-
 func change_level(level_index: int) -> void:
 	current_level_index = level_index
 
