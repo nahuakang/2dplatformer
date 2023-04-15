@@ -13,10 +13,10 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	velocity.x = (direction * max_speed).x
-	
+
 	if (!is_on_floor()):
 		velocity.y += gravity * delta
-	
+
 	velocity = move_and_slide(velocity, Vector2.UP)
 	$AnimatedSprite.flip_h = true if direction.x > 0 else false
 
