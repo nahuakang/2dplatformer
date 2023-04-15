@@ -27,4 +27,6 @@ tile_data = PoolIntArray(  )
 
 [node name="Hazards" type="Node2D" parent="."]
 
-[node name="Player" parent="." instance=ExtResource( 5 )]
+[node name="PlayerRoot" type="Node2D" parent="."]
+
+[node name="Player" parent="PlayerRoot" instance=ExtResource( 5 )]

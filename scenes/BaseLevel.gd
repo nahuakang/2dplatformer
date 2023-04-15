@@ -11,8 +11,8 @@ var total_coins = 0
 var collected_coins = 0
 
 func _ready() -> void:
-	spawn_position = $Player.global_position
-	register_player($Player)
+	spawn_position = $PlayerRoot/Player.global_position
+	register_player($PlayerRoot/Player)
 
 	coin_total_changed(get_tree().get_nodes_in_group("coin").size())
 
@@ -32,12 +32,16 @@ func register_player(player: KinematicBody2D) -> void:
 
 func create_player() -> void:
 	var player_instance = player_scene.instance()
-	add_child_below_node(current_player_node, player_instance)
+	$PlayerRoot.add_child(player_instance)
 	player_instance.global_position = spawn_position
 	register_player(player_instance)
 
 func on_player_died() -> void:
 	current_player_node.queue_free()
+
+	var timer = get_tree().create_timer(1)
+	yield(timer, "timeout")
+
 	create_player()
 
 func on_player_won() -> void:
