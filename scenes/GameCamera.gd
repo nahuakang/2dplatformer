@@ -12,7 +12,7 @@ var y_noise_sample_vector: Vector2 = Vector2.DOWN
 var x_noise_sample_position: Vector2 = Vector2.ZERO
 var y_noise_sample_position: Vector2 = Vector2.ZERO
 var noise_sample_travel_rate: int = 500
-var max_shake_offset: int = 6
+var max_shake_offset: int = 10
 var current_shake_percentage: float = 0
 var shake_decay = 4  # How much percentage per second for decaying
 
