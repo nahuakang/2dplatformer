@@ -26,6 +26,8 @@ var has_double_jump = false
 var is_state_new = true
 var current_state = State.NORMAL
 
+var is_dying = false
+
 func _ready() -> void:
 	$HazardArea.connect("area_entered", self, "on_hazard_area_entered")
 	default_hazard_mask = $HazardArea.collision_mask
@@ -134,6 +136,10 @@ func update_animation():
 		$AnimatedSprite.flip_h = true if move_vector.x > 0 else false
 
 func kill() -> void:
+	if is_dying:
+		return
+
+	is_dying = true
 	var player_death_instance = player_death_scene.instance()
 	get_parent().add_child_below_node(self, player_death_instance)
 	player_death_instance.global_position = global_position

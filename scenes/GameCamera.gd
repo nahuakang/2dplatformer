@@ -20,7 +20,7 @@ func _ready():
 	VisualServer.set_default_clear_color(background_color)
 
 func _process(delta: float) -> void:
-	target_position = acquire_target_position()
+	acquire_target_position()
 
 	global_position = lerp(target_position, global_position, pow(2, -15 * delta))
 
@@ -48,10 +48,16 @@ func _process(delta: float) -> void:
 func apply_shake(percentage: float) -> void:
 	current_shake_percentage = clamp(current_shake_percentage + percentage, 0, 1)
 
-func acquire_target_position() -> Vector2:
-	var players = get_tree().get_nodes_in_group("player")
-	if (players.size() > 0):
-		var player = players[0]
-		return player.global_position
-	else:
-		return Vector2.ZERO
+func acquire_target_position() -> void:
+	var position_acquired = get_target_position_from_node_group("player")
+	if (!position_acquired):
+		position_acquired = get_target_position_from_node_group("player_death")
+
+func get_target_position_from_node_group(group_name: String) -> bool:
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	if (nodes.size() > 0):
+		var node = nodes[0]
+		target_position = node.global_position
+		return true
+
+	return false
